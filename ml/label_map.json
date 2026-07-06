@@ -1,0 +1,19 @@
+{
+  "dataset": "yashmotiani/dogs-skin-disease-dataset",
+  "source": "kaggle",
+  "license": "CC0-1.0",
+  "version": "baseline-v0-coarse",
+  "note": "v0 coarse baseline. The dataset taxonomy is coarser than schema/labels.json; several canonical labels are lumped. Output labels stay within the canonical enum so the contract remains valid.",
+  "map": {
+    "Bacterial_dermatosis": "bacterial_pyoderma",
+    "Fungal_infections": "fungal_malassezia",
+    "Hypersensitivity_allergic_dermatosis": "atopic_dermatitis",
+    "Healthy": "healthy"
+  },
+  "coarse_notes": {
+    "fungal_malassezia": "coarse 'fungal' bucket; also contains dermatophytosis, not separated in v0",
+    "atopic_dermatitis": "coarse 'hypersensitivity' bucket; also contains allergic_contact_dermatitis, not separated in v0",
+    "healthy": "OOD/negative class, not a canonical condition"
+  },
+  "unsupported_in_v0": ["dermatophytosis", "allergic_contact_dermatitis"]
+}
