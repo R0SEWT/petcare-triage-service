@@ -114,3 +114,17 @@ bd close <id>         # Complete work
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
 <!-- END BEADS INTEGRATION -->
+
+
+## Session Close (local-only service adaptation)
+
+This repository currently has no git remote configured. Until a remote is added,
+the local project-kit closeout supersedes the generated push requirement:
+
+1. File or update beads issues for remaining work.
+2. Run relevant quality gates when code changes.
+3. Close completed beads issues.
+4. Commit local code and beads changes.
+5. Verify `git status` is clean.
+
+Once a remote is configured, switch back to PR-flow or push-based closeout.

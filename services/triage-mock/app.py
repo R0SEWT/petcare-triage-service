@@ -23,7 +23,7 @@ import time
 from pathlib import Path
 from typing import Any, Optional
 
-from fastapi import FastAPI, Form, Header, UploadFile, File
+from fastapi import FastAPI, File, Form, Header, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from jsonschema import Draft202012Validator
@@ -40,8 +40,8 @@ RESPONSE_VALIDATOR = Draft202012Validator(
     json.loads((SCHEMA_DIR / "triage-response.schema.json").read_text())
 )
 
-SEVERITY_BY_ID = {l["id"]: l.get("clinicalSeverity", "unknown") for l in LABELS["labels"]}
-DISPLAY_ES = {l["id"]: l["display"]["es"] for l in LABELS["labels"]}
+SEVERITY_BY_ID = {label["id"]: label.get("clinicalSeverity", "unknown") for label in LABELS["labels"]}
+DISPLAY_ES = {label["id"]: label["display"]["es"] for label in LABELS["labels"]}
 
 MODEL = {
     "name": "petcare-derm-yolov8-cls",  # YOLOv8 classification mode — see docs/ml/model-task-decision.md

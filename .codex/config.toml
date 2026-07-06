@@ -1,0 +1,33 @@
+# petcare-triage-service project-local Codex configuration.
+# Mirrors the project-kit Claude hooks where Codex supports them.
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+startup_timeout_sec = 20
+tool_timeout_sec = 60
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest", "--headless", "--isolated"]
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+
+[[hooks.SessionStart]]
+matcher = "startup|resume|clear|compact"
+
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = "bd prime"
+timeout = 30
+statusMessage = "Loading Beads context"
+
+[[hooks.PreCompact]]
+matcher = "manual|auto"
+
+[[hooks.PreCompact.hooks]]
+type = "command"
+command = "bd prime"
+timeout = 30
+statusMessage = "Refreshing Beads context"
+

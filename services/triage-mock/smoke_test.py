@@ -6,10 +6,9 @@ import json
 import sys
 from pathlib import Path
 
+from app import app
 from fastapi.testclient import TestClient
 from jsonschema import Draft202012Validator
-
-from app import app
 
 SCHEMA_DIR = Path(__file__).resolve().parents[2] / "docs" / "ml" / "schema"
 RESP = Draft202012Validator(json.loads((SCHEMA_DIR / "triage-response.schema.json").read_text()))

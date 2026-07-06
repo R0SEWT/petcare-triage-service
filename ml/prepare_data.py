@@ -95,7 +95,8 @@ def main() -> None:
     gt = gv = 0
     for label, c in sorted(totals.items()):
         print(f"{label:30} {c['train']:>6} {c['val']:>5} {c['train'] + c['val']:>6}")
-        gt += c["train"]; gv += c["val"]
+        gt += c["train"]
+        gv += c["val"]
     print(f"{'TOTAL':30} {gt:>6} {gv:>5} {gt + gv:>6}")
     print("\nUnsupported in v0 (no data):", ", ".join(LABEL_MAP["unsupported_in_v0"]))
 
