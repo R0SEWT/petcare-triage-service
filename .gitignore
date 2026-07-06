@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+# ML data & artifacts (never committed)
+ml/_raw/
+ml/prepared/
+ml/runs/
+*.pt
+# service venv
+services/triage-mock/.venv/
