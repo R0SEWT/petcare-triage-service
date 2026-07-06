@@ -9,3 +9,19 @@ ml/runs/
 *.pt
 # service venv
 services/triage-mock/.venv/
+# project-kit / Python dev
+data/bronze/
+data/silver/
+data/gold/
+data/_metadata/
+.ruff_cache/
+.pytest_cache/
+*.egg-info/
+# Beads / Dolt files
+.dolt/
+*.db
+.beads-credential-key
+# Hugging Face / Kaggle local artifacts
+.cache/
+huggingface/
+kaggle.json

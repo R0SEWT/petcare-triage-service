@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "petcare_triage_service",
+  "project_id": "852695cb-ae5d-48b4-addf-520ad37fb732"
+}
