@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://petcare.example/schema/triage-response.schema.json",
+  "title": "TriageResponse",
+  "description": "Body of a 200 response from POST /api/triage/analyze (contract v0.1). Non-200 failures use TriageError. The UI MUST branch on `resultState` and MUST NOT re-derive state from confidence thresholds.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["triageId", "status", "resultState", "model", "latencyMs", "imageQuality", "ood", "prediction", "recommendations", "safety"],
+  "properties": {
+    "triageId": { "type": "string", "pattern": "^triage_[A-Za-z0-9]+$" },
+    "status": { "type": "string", "enum": ["completed", "invalid"] },
+    "resultState": {
+      "type": "string",
+      "enum": ["completed", "low_confidence", "out_of_distribution", "invalid"],
+      "description": "Explicit UI branch. `completed` = actionable; `low_confidence`/`out_of_distribution` = show uncertainty; `invalid` = no result."
+    },
+    "clientRequestId": { "type": ["string", "null"], "description": "Echoes the idempotency key sent by the client, if any." },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "datasetVersion", "calibrationVersion"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "datasetVersion": { "type": "string" },
+        "calibrationVersion": { "type": "string" }
+      }
+    },
+    "latencyMs": { "type": "integer", "minimum": 0 },
+    "imageQuality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["isAcceptable", "issues"],
+      "properties": {
+        "isAcceptable": { "type": "boolean" },
+        "issues": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["blur", "too_dark", "too_bright", "obstruction", "low_resolution"] }
+        }
+      }
+    },
+    "ood": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["isOutOfDistribution", "score", "reason"],
+      "properties": {
+        "isOutOfDistribution": { "type": "boolean" },
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "reason": { "type": ["string", "null"] }
+      }
+    },
+    "prediction": {
+      "description": "Null when resultState is `invalid` or `out_of_distribution`.",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition", "displayName", "confidence", "urgency", "topK"],
+          "properties": {
+            "condition": { "$ref": "#/$defs/conditionId" },
+            "displayName": { "type": "string" },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "urgency": { "type": "string", "enum": ["no_urgency", "follow_up", "consult_soon", "urgent", "invalid"] },
+            "topK": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["condition", "confidence"],
+                "properties": {
+                  "condition": { "$ref": "#/$defs/conditionId" },
+                  "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "recommendations": { "type": "array", "items": { "type": "string" } },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["message", "requiresVeterinarian"],
+      "properties": {
+        "message": { "type": "string" },
+        "requiresVeterinarian": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "conditionId": {
+      "type": "string",
+      "enum": [
+        "atopic_dermatitis",
+        "dermatophytosis",
+        "allergic_contact_dermatitis",
+        "fungal_malassezia",
+        "bacterial_pyoderma",
+        "unknown"
+      ]
+    }
+  }
+}

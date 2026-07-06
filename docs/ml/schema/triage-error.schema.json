@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://petcare.example/schema/triage-error.schema.json",
+  "title": "TriageError",
+  "description": "Body of a non-200 response from POST /api/triage/analyze. Request/system failures only. Low-confidence and out-of-distribution outcomes are NOT errors; they are 200 responses with the corresponding `resultState`.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "retryable"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "invalid_image_type",
+            "image_too_large",
+            "poor_image_quality",
+            "unsupported_species",
+            "model_timeout",
+            "model_unavailable"
+          ]
+        },
+        "message": { "type": "string" },
+        "retryable": { "type": "boolean" },
+        "clientRequestId": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

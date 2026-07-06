@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "labels-2026-07-06",
+  "description": "Canonical condition taxonomy for the PetCare dermatology triage model. Persisted records and model outputs MUST use the canonical `id`. Display strings are for UI localization only and match the strings already rendered by PetCare-Web (src/lib/mock-data.ts).",
+  "locales": ["es"],
+  "labels": [
+    {
+      "id": "atopic_dermatitis",
+      "display": { "es": "Dermatitis Atópica" },
+      "isModelClass": true,
+      "clinicalSeverity": "low"
+    },
+    {
+      "id": "dermatophytosis",
+      "display": { "es": "Dermatofitosis (Tiña)" },
+      "isModelClass": true,
+      "clinicalSeverity": "moderate",
+      "notes": "Zoonotic (transmissible to humans); triage should not under-escalate."
+    },
+    {
+      "id": "allergic_contact_dermatitis",
+      "display": { "es": "Dermatitis Alérgica por Contacto" },
+      "isModelClass": true,
+      "clinicalSeverity": "low"
+    },
+    {
+      "id": "fungal_malassezia",
+      "display": { "es": "Infección Fúngica (Malassezia)" },
+      "isModelClass": true,
+      "clinicalSeverity": "moderate"
+    },
+    {
+      "id": "bacterial_pyoderma",
+      "display": { "es": "Pioderma Bacteriana" },
+      "isModelClass": true,
+      "clinicalSeverity": "high",
+      "notes": "Can be serious; deep pyoderma warrants prompt veterinary care."
+    },
+    {
+      "id": "unknown",
+      "display": { "es": "No determinado" },
+      "isModelClass": false,
+      "clinicalSeverity": "unknown",
+      "notes": "Not a model output class; assigned when the result is low-confidence, out-of-distribution, or invalid."
+    }
+  ]
+}

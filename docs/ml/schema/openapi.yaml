@@ -1,0 +1,92 @@
+openapi: 3.1.0
+info:
+  title: PetCare Triage Inference API
+  version: 0.1.0
+  description: >
+    Contract v0.1 for the dermatological triage seam between PetCare-Web and the
+    ML inference service. Source of truth for both the frontend client and the
+    mock/real service. Prose rationale lives in ../inference-contract.md;
+    machine-readable schemas live alongside this file.
+  x-status: draft
+  x-owner: ML Lead
+
+servers:
+  - url: "{baseUrl}"
+    description: Configured per environment (frontend reads this from an env var).
+    variables:
+      baseUrl:
+        default: http://localhost:8000
+
+paths:
+  /api/triage/analyze:
+    post:
+      operationId: analyzeTriage
+      summary: Run dermatological triage on a pet skin photo.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [image, petId, species, bodyRegion, consentForModelImprovement]
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: JPEG or PNG, max 5 MB. Server re-validates; client checks are advisory.
+                petId:
+                  type: string
+                species:
+                  type: string
+                  enum: [dog, cat]
+                bodyRegion:
+                  type: string
+                  enum: [ear, belly, paw, tail_base, flank, unknown]
+                consentForModelImprovement:
+                  type: boolean
+                petAgeMonths:
+                  type: integer
+                  minimum: 0
+                breed:
+                  type: string
+                symptomNotes:
+                  type: string
+                  maxLength: 500
+                clientRequestId:
+                  type: string
+                  description: Client-generated idempotency key.
+      responses:
+        "200":
+          description: >
+            Triage produced a result. Branch on `resultState`
+            (completed | low_confidence | out_of_distribution).
+          content:
+            application/json:
+              schema:
+                $ref: "./triage-response.schema.json"
+        "400":
+          description: invalid_image_type — unsupported MIME type.
+          content:
+            application/json:
+              schema: { $ref: "./triage-error.schema.json" }
+        "413":
+          description: image_too_large — file exceeds 5 MB.
+          content:
+            application/json:
+              schema: { $ref: "./triage-error.schema.json" }
+        "422":
+          description: >
+            poor_image_quality (blur/darkness/obstruction) or unsupported_species.
+          content:
+            application/json:
+              schema: { $ref: "./triage-error.schema.json" }
+        "503":
+          description: model_unavailable — retry later.
+          content:
+            application/json:
+              schema: { $ref: "./triage-error.schema.json" }
+        "504":
+          description: model_timeout — inference exceeded SLA; offer retry.
+          content:
+            application/json:
+              schema: { $ref: "./triage-error.schema.json" }

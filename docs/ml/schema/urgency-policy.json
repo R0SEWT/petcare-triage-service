@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "urgency-2026-07-06",
+  "description": "Product/clinical policy that maps a triage result (condition + confidence band + result state) to an urgency class. Urgency is a POLICY layer, not a model output, and MUST NOT be derived from raw confidence alone. Evaluated top-to-bottom: the first matching rule wins.",
+  "confidenceBands": {
+    "high": { "min": 0.70 },
+    "medium": { "min": 0.50, "max": 0.70 },
+    "low": { "max": 0.50 }
+  },
+  "urgencyClasses": ["no_urgency", "follow_up", "consult_soon", "urgent", "invalid"],
+  "rules": [
+    {
+      "id": "state-invalid",
+      "when": { "resultState": "invalid" },
+      "urgency": "invalid",
+      "rationale": "No usable model result (input/model failure)."
+    },
+    {
+      "id": "state-ood",
+      "when": { "resultState": "out_of_distribution" },
+      "urgency": "invalid",
+      "rationale": "Image outside training distribution; do not assign clinical urgency."
+    },
+    {
+      "id": "state-low-confidence",
+      "when": { "resultState": "low_confidence" },
+      "urgency": "follow_up",
+      "rationale": "Model completed but is uncertain; ask for a better photo or a vet consult, never present as actionable."
+    },
+    {
+      "id": "high-severity-confident",
+      "when": { "clinicalSeverity": "high", "confidenceBand": ["high", "medium"] },
+      "urgency": "consult_soon",
+      "escalateTo": "urgent",
+      "escalateWhen": "symptomNotes indicate spreading, pain, open lesions, or fever (manual review queue)",
+      "rationale": "Bacterial pyoderma and similar can be serious."
+    },
+    {
+      "id": "moderate-severity-confident",
+      "when": { "clinicalSeverity": "moderate", "confidenceBand": ["high", "medium"] },
+      "urgency": "consult_soon",
+      "rationale": "Zoonotic / fungal conditions merit a scheduled consult."
+    },
+    {
+      "id": "low-severity-confident",
+      "when": { "clinicalSeverity": "low", "confidenceBand": ["high", "medium"] },
+      "urgency": "follow_up",
+      "rationale": "Allergic/atopic dermatitis: monitor and track changes."
+    },
+    {
+      "id": "default",
+      "when": {},
+      "urgency": "follow_up",
+      "rationale": "Conservative default: never return no_urgency for a medical-adjacent result without an explicit low-severity + confident match."
+    }
+  ],
+  "uiUrgencyMap": {
+    "_comment": "Reference only. PetCare-Web maps canonical urgency -> its Urgency token (src/lib/mock-data.ts). Canonical urgency is authoritative and persisted; UI tokens are presentational.",
+    "no_urgency": "success",
+    "follow_up": "info",
+    "consult_soon": "warning",
+    "urgent": "danger",
+    "invalid": "info"
+  }
+}
