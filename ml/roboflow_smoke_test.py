@@ -9,6 +9,7 @@ writes prediction JSONL into ml/runs/.
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import sys
@@ -190,7 +191,7 @@ def endpoint_for(task: str, model_id: str, api_key: str) -> str:
 
 def call_roboflow(model: dict[str, str], image_path: Path, api_key: str, timeout: int) -> dict[str, Any]:
     with image_path.open("rb") as handle:
-        payload = handle.read()
+        payload = base64.b64encode(handle.read())
 
     request = Request(
         endpoint_for(model["task"], model["model_id"], api_key),
