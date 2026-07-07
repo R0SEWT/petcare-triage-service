@@ -59,6 +59,10 @@ Aggregate over best fold checkpoints:
 
 Remote and local gitignored copy:
 
+- Hugging Face private model repo:
+  `https://huggingface.co/rosewt/petcare-derm-yolov8n-cv5-roboflow-bootstrap`
+- HF commit:
+  `42849f078ca3178eff1a56f38b9b62185ecb7e15`
 - `ml/runs/petcare-derm-yolov8-cls/cv5-yolov8n-summary.json`
 - `ml/runs/petcare-derm-yolov8-cls/logs/cv5-yolov8n-20260707-040639.log`
 - `ml/runs/petcare-derm-yolov8-cls/cv5-yolov8n-fold_<n>/results.csv`
@@ -66,6 +70,10 @@ Remote and local gitignored copy:
 - `ml/runs/petcare-derm-yolov8-cls/cv5-yolov8n-fold_<n>/weights/last.pt`
 
 Local artifact size: 41M.
+
+The HF repo excludes Ultralytics train/validation batch preview images to avoid
+publishing dataset-derived image examples. It includes checkpoints, metrics
+CSVs, confusion matrices, result plots, summary JSON, and the training log.
 
 ## Decision
 
