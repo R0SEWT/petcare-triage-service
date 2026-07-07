@@ -82,6 +82,32 @@
       "priority": 2
     },
     {
+      "id": "hf-shrayyyy-vet-derm-dataset",
+      "sourceType": "huggingface_dataset",
+      "url": "https://huggingface.co/datasets/shrayyyy/vet-derm-dataset",
+      "reportedLicense": "Apache-2.0",
+      "task": "image_classification_and_vlm_finetuning_candidate",
+      "reportedImages": 3882,
+      "classes": [
+        "Dermatitis",
+        "Fungal_infections",
+        "Healthy",
+        "Hypersensitivity",
+        "demodicosis",
+        "ringworm"
+      ],
+      "coverage": {
+        "dermatophytosis": "ringworm",
+        "atopic_dermatitis": "Hypersensitivity is weak proxy",
+        "fungal_malassezia": "Fungal_infections is noisy proxy",
+        "ood": "demodicosis is out-of-scope dermatology; Healthy is negative",
+        "ambiguous": "Dermatitis is too broad for supervised canonical mapping"
+      },
+      "decision": "deduped_proxy_training_only",
+      "risk": "HF dataset card says it is based on Kaggle youssefmohmmed/dogs-skin-diseases-image-dataset. pHash guardrail removed 743/3882 rows against existing Roboflow/Mendeley/silver/proxy references, including 666 against Roboflow v2.",
+      "priority": 2
+    },
+    {
       "id": "roboflow-dog-skin-disease-detection-v1",
       "sourceType": "roboflow_universe",
       "url": "https://universe.roboflow.com/myprojects-zsnac/dog-skin-disease-detection-6pgvk",

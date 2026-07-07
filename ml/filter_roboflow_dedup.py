@@ -65,6 +65,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Replace existing symlinks under the output image layout.",
     )
+    parser.add_argument(
+        "--filter-id",
+        default="roboflow_v2_mendeley_phash4_trainval",
+        help="Identifier written to kept manifest rows.",
+    )
     return parser.parse_args()
 
 
@@ -248,7 +253,7 @@ def main() -> int:
         kept_row = {
             **base_row,
             "filter_status": "kept",
-            "filter_id": "roboflow_v2_mendeley_phash4_trainval",
+            "filter_id": args.filter_id,
             "dedup_reference_manifests": [str(path) for path in reference_manifests],
             "dedup_phash_threshold": args.phash_threshold,
             "nearest_reference_phash_distance": nearest_distance,

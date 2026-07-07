@@ -87,3 +87,12 @@ cover labels missing from the current bootstrap, especially `ringworm` →
 `dermatophytosis`. The current shortlist lives in
 `independent-training-candidates.md` and
 `independent-training-candidates.json`.
+
+## 2026-07-07 update — HF VetDerm
+
+`shrayyyy/vet-derm-dataset` appeared on HF after the initial survey and was
+evaluated in `hf-vet-derm-dataset.md`. It is not a new independent veterinary
+source: the dataset card says it is based on Kaggle
+`youssefmohmmed/dogs-skin-diseases-image-dataset`, and dedup guardrails removed
+743/3,882 rows against existing Roboflow/Mendeley/silver/proxy references.
+Use it only as deduped noisy training/proxy expansion, never evaluation.

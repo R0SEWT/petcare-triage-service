@@ -49,17 +49,27 @@ It does not cover:
      out-of-scope dermatology.
    - Use: crop/convert detection annotations into classification candidates.
 
-4. **Roboflow dog-skin-disease-detection v1**
+4. **HF shrayyyy/vet-derm-dataset**
+   - URL: https://huggingface.co/datasets/shrayyyy/vet-derm-dataset
+   - Why: large `ringworm` and `demodicosis` coverage in a convenient JSONL
+     format.
+   - Result: evaluated, but not independent. The dataset card says it is based
+     on Kaggle `youssefmohmmed/dogs-skin-diseases-image-dataset`; pHash guardrail
+     removed 743/3,882 rows against existing Roboflow/Mendeley/silver/proxy
+     references. See `hf-vet-derm-dataset.md`.
+   - Use: deduped noisy training/proxy only; never evaluation.
+
+5. **Roboflow dog-skin-disease-detection v1**
    - URL: https://universe.roboflow.com/myprojects-zsnac/dog-skin-disease-detection-6pgvk
    - Why: another small `ringworm` / allergy-like source for cross-source
      comparison after dedup.
 
-5. **Kaggle smadive/pet-disease-images**
+6. **Kaggle smadive/pet-disease-images**
    - URL: https://www.kaggle.com/datasets/smadive/pet-disease-images
    - Why: reported CC0; possible pet OOD / poor-quality examples.
    - Use: inspect folder taxonomy first; do not map to condition labels blindly.
 
-6. **HF OOD sources**
+7. **HF OOD sources**
    - Human skin: `HawkFranklin-Research/SCIN-Dermatology-Raw-Images`
    - Non-skin pets: `microsoft/cats_vs_dogs`
    - Use only for OOD/pretraining. Human and whole-pet images must never carry
@@ -85,3 +95,7 @@ Kaivlya is not currently exportable through a stable version. Continue with
 `roboflow-dog-skin-disease-prediction-v3`, which is the smallest useful way to
 add `ringworm`/`dermatophytosis` signal and test cross-source dedup. See
 `roboflow-dog-skin-disease-prediction-v3.md`.
+
+HF `shrayyyy/vet-derm-dataset` has now been evaluated and should not be treated
+as independent validation data. It remains useful only as deduped proxy training
+expansion, mainly for `ringworm`/`dermatophytosis` and `demodicosis` OOD.
