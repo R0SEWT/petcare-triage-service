@@ -7,7 +7,7 @@ dependencies = [
     "fastapi>=0.115",
     "jsonschema>=4.22",
     "python-multipart>=0.0.9",
-    "uvicorn[standard]>=0.30",
+    "uvicorn[standard]>=0.50.2",
 ]
 
 [project.optional-dependencies]
