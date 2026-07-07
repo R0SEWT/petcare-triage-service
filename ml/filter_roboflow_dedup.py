@@ -44,7 +44,7 @@ def parse_args() -> argparse.Namespace:
         "--reference-manifest",
         type=Path,
         action="append",
-        default=[DEFAULT_REFERENCE],
+        default=None,
         help="Reference manifest to exclude exact/perceptual matches against. Repeatable.",
     )
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
@@ -178,6 +178,7 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
 def main() -> int:
     args = parse_args()
     keep_splits = set(args.keep_split or sorted(TRAINING_SPLITS))
+    reference_manifests = args.reference_manifest or [DEFAULT_REFERENCE]
     candidate_root = args.candidate_root or args.candidate_manifest.parent
     out_dir = args.out
     manifest_out = out_dir / "manifest.jsonl"
@@ -187,7 +188,7 @@ def main() -> int:
         raise SystemExit(f"{out_dir} already has filter outputs; choose a new --out directory")
 
     candidate_rows = load_jsonl(args.candidate_manifest)
-    reference_by_sha, references = build_reference_index(args.reference_manifest)
+    reference_by_sha, references = build_reference_index(reference_manifests)
     if not references:
         raise SystemExit("No reference rows loaded")
 
@@ -248,7 +249,7 @@ def main() -> int:
             **base_row,
             "filter_status": "kept",
             "filter_id": "roboflow_v2_mendeley_phash4_trainval",
-            "dedup_reference_manifests": [str(path) for path in args.reference_manifest],
+            "dedup_reference_manifests": [str(path) for path in reference_manifests],
             "dedup_phash_threshold": args.phash_threshold,
             "nearest_reference_phash_distance": nearest_distance,
             "candidate_phash": str(candidate_hash),
@@ -266,7 +267,7 @@ def main() -> int:
     report = {
         "candidate_manifest": str(args.candidate_manifest),
         "candidate_root": str(candidate_root),
-        "reference_manifests": [str(path) for path in args.reference_manifest],
+        "reference_manifests": [str(path) for path in reference_manifests],
         "out_dir": str(out_dir),
         "keep_splits": sorted(keep_splits),
         "phash_threshold": args.phash_threshold,

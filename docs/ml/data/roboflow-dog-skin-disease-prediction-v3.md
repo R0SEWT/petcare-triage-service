@@ -1,6 +1,6 @@
 # Roboflow dog-skin-disease-prediction v3
 
-Task: `petcare-triage-service-ghn` · Status: fallback ready, download pending API key
+Task: `petcare-triage-service-ghn` · Status: acquired and deduped locally
 
 Source: https://universe.roboflow.com/majorproject-kopqr/dog-skin-disease-prediction
 
@@ -30,9 +30,7 @@ These labels are not vet-confirmed and must never enter `gold-v0`.
 
 ## Download
 
-The current environment does not have `ROBOFLOW_API_KEY`, `roboflow` CLI, or the
-Roboflow Python package configured. When the key is available in the shell, use
-the official CLI or SDK to download the folder/classification export into
+The dataset was downloaded with the official Roboflow CLI via `uvx` into
 gitignored raw storage.
 
 CLI shape from Roboflow docs:
@@ -66,3 +64,11 @@ uv run --with pillow --with imagehash python ml/filter_roboflow_dedup.py \
 
 If `ml/silver/silver-v0/manifest.jsonl` or future `ml/gold/gold-v0/manifest.jsonl`
 exists locally, include them as additional reference manifests.
+
+## Local Result
+
+Acquisition/dedup run details live in
+[`../runs/roboflow-dog-skin-disease-prediction-v3-20260707.md`](../runs/roboflow-dog-skin-disease-prediction-v3-20260707.md).
+After pHash dedup against the primary Roboflow dataset, Mendeley, and local
+silver-v0, only 74 train/val rows remained; 9 are `ringworm` mapped to
+`dermatophytosis`.
