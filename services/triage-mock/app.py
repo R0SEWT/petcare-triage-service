@@ -19,10 +19,12 @@ Design notes:
 from __future__ import annotations
 
 import json
+import logging
 import time
 from pathlib import Path
 from typing import Any, Optional
 
+from capture import capture_triage_best_effort
 from fastapi import FastAPI, File, Form, Header, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -49,6 +51,7 @@ MODEL = {
     "datasetVersion": LABELS["version"],
     "calibrationVersion": URGENCY_POLICY["version"],
 }
+LOGGER = logging.getLogger(__name__)
 
 app = FastAPI(title="PetCare Triage Mock", version="0.1.0")
 app.add_middleware(
@@ -223,4 +226,20 @@ async def analyze(
             "message": "Mock produced a non-conformant response: " + errors[0].message,
             "retryable": True, "clientRequestId": clientRequestId,
         }})
+    try:
+        capture_triage_best_effort(
+            consent_for_model_improvement=consentForModelImprovement,
+            image_bytes=body,
+            content_type=image.content_type or "",
+            pet_id=petId,
+            species=species,
+            body_region=bodyRegion,
+            pet_age_months=petAgeMonths,
+            breed=breed,
+            symptom_notes=symptomNotes,
+            client_request_id=clientRequestId,
+            response=payload,
+        )
+    except Exception:
+        LOGGER.exception("unexpected consented capture failure")
     return JSONResponse(status_code=200, content=payload)

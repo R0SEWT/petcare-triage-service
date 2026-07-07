@@ -25,6 +25,9 @@ Health check: `GET http://localhost:8000/health`
   returned — the mock cannot drift from the contract.
 - Urgency is computed from `urgency-policy.json`, never hardcoded.
 - Model name is `petcare-derm-yolov8-cls` (see `../../docs/ml/model-task-decision.md`).
+- If `consentForModelImprovement=true`, successful analyses are written
+  best-effort to the local capture buffer documented in
+  `../../docs/ml/data/consented-capture-buffer.md`.
 
 ## Deterministic scenarios (no randomness)
 

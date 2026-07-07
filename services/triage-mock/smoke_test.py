@@ -3,8 +3,12 @@ schema-valid body. Run: python smoke_test.py"""
 
 import io
 import json
+import os
 import sys
+import tempfile
 from pathlib import Path
+
+os.environ["PETCARE_CAPTURE_BUFFER_DIR"] = tempfile.mkdtemp(prefix="petcare-capture-smoke-")
 
 from app import app
 from fastapi.testclient import TestClient

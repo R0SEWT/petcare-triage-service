@@ -144,6 +144,11 @@ Each saved triage should include:
 - latency and created timestamp
 - user feedback fields: `helpful`, `vetConfirmedCondition`, `notes`
 
+For model improvement, successful analyses with
+`consentForModelImprovement=true` may also be copied into the service-side
+capture buffer. This copy is best-effort and must not change inference success
+or failure. See `data/consented-capture-buffer.md`.
+
 ## Evaluation Metrics
 
 Minimum ML dashboard:
