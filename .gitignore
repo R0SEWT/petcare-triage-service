@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+.env
 # ML data & artifacts (never committed)
 ml/_raw/
 ml/prepared/
