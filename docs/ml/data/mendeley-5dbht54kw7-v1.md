@@ -57,6 +57,10 @@ Important discrepancy: `folders.json` contains 95 source folders, but
 are preserved as `unlabeled_source` and must not be used as supervised condition
 examples until a complete label table is found or labels are adjudicated.
 
+Resolution note: a 2026-07-07 audit found no complete public per-folder label
+table in the Mendeley page, Springer paper, supplementary DOCX, or local
+metadata. See `docs/ml/data/mendeley-missing-label-resolution.md`.
+
 Image-level normalized counts from the available label file:
 
 | Source label | PetCare mapping | Image count |
