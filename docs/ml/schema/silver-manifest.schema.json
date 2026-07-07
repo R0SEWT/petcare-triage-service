@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://petcare.local/ml/schema/silver-manifest.schema.json",
+  "title": "PetCare proxy silver evaluation manifest row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "imageId",
+    "datasetVersion",
+    "imagePath",
+    "sha256",
+    "source",
+    "license",
+    "species",
+    "bodyRegion",
+    "condition",
+    "oodClass",
+    "qualityFlags",
+    "vetConfirmed",
+    "validationTier",
+    "adjudicationMode",
+    "annotatorId",
+    "labeledAt",
+    "adjudication",
+    "neverTrain"
+  ],
+  "properties": {
+    "imageId": {
+      "type": "string",
+      "pattern": "^silver_[a-z0-9_:-]+$"
+    },
+    "datasetVersion": {
+      "type": "string",
+      "pattern": "^silver-v[0-9]+(\\.[0-9]+)?$"
+    },
+    "imagePath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path relative to the silver dataset root."
+    },
+    "storageRef": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1
+    },
+    "species": {
+      "type": "string",
+      "enum": ["dog", "cat", "other", "human", "unknown"]
+    },
+    "breed": {
+      "type": ["string", "null"]
+    },
+    "bodyRegion": {
+      "type": "string",
+      "enum": ["ear", "belly", "paw", "tail_base", "flank", "face", "back", "leg", "unknown"]
+    },
+    "condition": {
+      "type": "string",
+      "enum": [
+        "atopic_dermatitis",
+        "dermatophytosis",
+        "allergic_contact_dermatitis",
+        "fungal_malassezia",
+        "bacterial_pyoderma",
+        "unknown"
+      ]
+    },
+    "oodClass": {
+      "type": "string",
+      "enum": [
+        "in_scope",
+        "healthy_skin",
+        "non_skin_pet",
+        "human_skin",
+        "other_species",
+        "poor_quality",
+        "unknown_ood"
+      ]
+    },
+    "qualityFlags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["blur", "dark", "overexposed", "obstructed", "too_far", "too_close", "low_resolution"]
+      }
+    },
+    "vetConfirmed": {
+      "type": "boolean",
+      "const": false
+    },
+    "validationTier": {
+      "type": "string",
+      "const": "proxy"
+    },
+    "adjudicationMode": {
+      "type": "string",
+      "enum": ["simulated", "non_vet", "mixed_non_clinical"]
+    },
+    "annotatorId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "labeledAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "adjudication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["labelers", "agreed", "tiebreak"],
+      "properties": {
+        "labelers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "agreed": {
+          "type": "boolean"
+        },
+        "tiebreak": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "consentScope": {
+      "type": "string",
+      "enum": ["eval_only", "eval_and_research", "public", "unknown"]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "neverTrain": {
+      "type": "boolean",
+      "const": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "oodClass": { "const": "in_scope" }
+        }
+      },
+      "then": {
+        "not": {
+          "properties": {
+            "condition": { "const": "unknown" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "oodClass": { "enum": ["healthy_skin", "non_skin_pet", "human_skin", "other_species", "poor_quality", "unknown_ood"] }
+        }
+      },
+      "then": {
+        "properties": {
+          "condition": { "const": "unknown" }
+        }
+      }
+    }
+  ]
+}

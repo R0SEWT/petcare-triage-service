@@ -7,6 +7,7 @@ ml/_raw/
 ml/prepared/
 ml/runs/
 ml/gold/
+ml/silver/
 *.pt
 # service venv
 services/triage-mock/.venv/

@@ -12,9 +12,12 @@ the mock service, the real service, and the frontend client all build against.
 | `labels.json` | Canonical condition taxonomy + localized display strings | service (class ids), frontend (localization), eval (label space) |
 | `urgency-policy.json` | Ordered rule table: result → urgency class | service (urgency layer), documented for frontend |
 | `gold-manifest.schema.json` | Frozen vet-verified eval manifest row | offline eval, HF dataset provenance, leakage checks |
+| `silver-manifest.schema.json` | Proxy eval manifest row (`validationTier=proxy`, `vetConfirmed=false`) | pipeline validation, model ranking rehearsals, HF dataset provenance |
 
 Gold manifests can be generated from adjudicated CSV intake sheets with
 `ml/build_gold_manifest.py`; see `../data/gold-eval-set.md`.
+Silver manifests can be generated from simulated/non-vet intake sheets with
+`ml/build_silver_manifest.py`; see `../data/silver-proxy-eval-set.md`.
 
 ## Design decisions baked into v0.1
 
