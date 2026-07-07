@@ -219,6 +219,13 @@ def call_roboflow(model: dict[str, str], image_path: Path, api_key: str, timeout
             "latency_ms": round((time.time() - started) * 1000),
             "error": str(exc.reason),
         }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "status": None,
+            "latency_ms": round((time.time() - started) * 1000),
+            "error": f"{type(exc).__name__}: {exc}",
+        }
 
     try:
         parsed: Any = json.loads(body)
