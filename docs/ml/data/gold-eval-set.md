@@ -98,6 +98,21 @@ uv run python ml/audit_gold_intake.py \
 The audit reports per-condition/OOD/species/quality counts and target deficits.
 Use `--fail-on-deficit` in automation once the CSV is expected to be complete.
 
+Check for leakage against training manifests before publishing:
+
+```bash
+uv run --with pillow --with imagehash python ml/check_gold_leakage.py \
+  --gold-manifest ml/gold/gold-v0/manifest.jsonl \
+  --gold-root ml/gold/gold-v0 \
+  --training-manifest ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4/manifest.jsonl \
+  --training-manifest ml/prepared/mendeley_5dbht54kw7_v1/manifest.jsonl \
+  --phash-threshold 4 \
+  --out ml/gold/gold-v0/leakage-report.json
+```
+
+The checker exits non-zero if any exact SHA match or pHash near-duplicate is
+found. Omit `--phash-threshold` to run an exact-SHA-only check.
+
 ## Sourcing sequence
 
 1. **Vet-clinic partnership** (primary) — real, consented photos with vet-confirmed
