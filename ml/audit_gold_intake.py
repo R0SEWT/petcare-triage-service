@@ -5,11 +5,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from ml.build_gold_manifest import read_intake
+try:
+    from ml.build_gold_manifest import read_intake
+except ModuleNotFoundError:  # pragma: no cover - direct script execution path.
+    sys.path.append(str(Path(__file__).resolve().parents[1]))
+    from ml.build_gold_manifest import read_intake
 
 IN_SCOPE_CONDITIONS = [
     "atopic_dermatitis",

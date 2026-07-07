@@ -27,6 +27,9 @@ def test_check_gold_leakage_flags_exact_sha_matches(tmp_path: Path):
     report = leakage_report(gold_manifest, tmp_path / "gold", [training_manifest], phash_threshold=None)
 
     assert report["leakageFound"] is True
+    assert report["matchSummary"]["totalMatches"] == 1
+    assert report["matchSummary"]["uniqueGoldRowsMatched"] == 1
+    assert report["matchSummary"]["byMatchType"] == {"exact_sha": 1}
     assert report["exactMatches"][0]["matchType"] == "exact_sha"
     assert report["exactMatches"][0]["goldImageId"] == "gold_000001"
     assert report["phashMatches"] == []
@@ -47,4 +50,6 @@ def test_check_gold_leakage_allows_distinct_sha_rows(tmp_path: Path):
     report = leakage_report(gold_manifest, tmp_path / "gold", [training_manifest], phash_threshold=None)
 
     assert report["leakageFound"] is False
+    assert report["matchSummary"]["totalMatches"] == 0
+    assert report["matchSummary"]["uniqueGoldRowsMatched"] == 0
     assert report["exactMatches"] == []

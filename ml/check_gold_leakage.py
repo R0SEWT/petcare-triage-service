@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -165,6 +166,9 @@ def leakage_report(
         if phash_threshold is not None
         else []
     )
+    matches = exact + phash
+    match_type_counts = Counter(str(match["matchType"]) for match in matches)
+    gold_match_counts = Counter(str(match["goldImageId"]) for match in matches)
     return {
         "goldManifest": str(gold_manifest),
         "goldRows": len(gold_rows),
@@ -172,6 +176,15 @@ def leakage_report(
         "trainingRows": len(training_rows),
         "phashThreshold": phash_threshold,
         "leakageFound": bool(exact or phash),
+        "matchSummary": {
+            "totalMatches": len(matches),
+            "uniqueGoldRowsMatched": len(gold_match_counts),
+            "byMatchType": dict(sorted(match_type_counts.items())),
+            "topGoldRowsByMatchCount": [
+                {"goldImageId": image_id, "matches": count}
+                for image_id, count in gold_match_counts.most_common(10)
+            ],
+        },
         "exactMatches": exact,
         "phashMatches": phash,
     }

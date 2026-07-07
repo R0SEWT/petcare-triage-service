@@ -23,11 +23,29 @@ raw candidate images outside git, for example under `ml/silver/intake/raw/`.
 Example manifest rows live in `silver-v0.manifest.example.jsonl`; they are
 schema examples only.
 
+For the current Roboflow bootstrap mirror, the `test` split was excluded from
+the CV train/val folds and can be used as a proxy rehearsal set. It is still
+noisy uploader-labeled data, not vet-confirmed evidence, and only covers
+`atopic_dermatitis`, `bacterial_pyoderma`, `fungal_malassezia`, and
+`healthy_skin`.
+
+Generate a deterministic silver intake CSV from that held-out split:
+
+```bash
+uv run python ml/create_silver_intake_from_manifest.py \
+  --source-manifest ml/prepared/roboflow_dog_skin_disease_dataset_v2/manifest.jsonl \
+  --out-csv ml/silver/intake/silver-v0.roboflow-test.csv \
+  --split test \
+  --max-per-bucket 20 \
+  --labeler proxy_roboflow \
+  --labeler reviewer_01
+```
+
 Build the proxy dataset:
 
 ```bash
 uv run python ml/build_silver_manifest.py \
-  --intake-csv ml/silver/intake/silver-v0.adjudicated.csv \
+  --intake-csv ml/silver/intake/silver-v0.roboflow-test.csv \
   --silver-root ml/silver/silver-v0 \
   --dataset-version silver-v0
 ```
@@ -41,7 +59,7 @@ Audit coverage:
 
 ```bash
 uv run python ml/audit_silver_intake.py \
-  --intake-csv ml/silver/intake/silver-v0.adjudicated.csv \
+  --intake-csv ml/silver/intake/silver-v0.roboflow-test.csv \
   --target-per-bucket 20
 ```
 
@@ -59,6 +77,11 @@ uv run --with pillow --with imagehash python ml/check_gold_leakage.py \
 
 The leakage checker is name-compatible with gold but works with any manifest
 that has `imagePath`/`sha256`.
+
+The first local rehearsal is documented in
+[`../runs/silver-v0-roboflow-test-20260707.md`](../runs/silver-v0-roboflow-test-20260707.md).
+It produced a usable process rehearsal but found pHash leakage against training
+data, so it is not an independent evaluation set.
 
 ## Reporting Rule
 

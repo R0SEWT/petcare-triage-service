@@ -5,10 +5,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
-from ml.audit_gold_intake import audit_rows
-from ml.build_silver_manifest import read_intake
+try:
+    from ml.audit_gold_intake import audit_rows
+    from ml.build_silver_manifest import read_intake
+except ModuleNotFoundError:  # pragma: no cover - direct script execution path.
+    sys.path.append(str(Path(__file__).resolve().parents[1]))
+    from ml.audit_gold_intake import audit_rows
+    from ml.build_silver_manifest import read_intake
 
 
 def parse_args() -> argparse.Namespace:

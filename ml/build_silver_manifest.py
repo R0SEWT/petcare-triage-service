@@ -12,20 +12,33 @@ import argparse
 import csv
 import json
 import shutil
+import sys
 from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
 
-from ml.build_gold_manifest import (
-    OOD_CONDITION,
-    clean_optional,
-    image_subdir,
-    parse_bool,
-    sha256,
-    source_path,
-    split_list,
-)
+try:
+    from ml.build_gold_manifest import (
+        OOD_CONDITION,
+        clean_optional,
+        image_subdir,
+        parse_bool,
+        sha256,
+        source_path,
+        split_list,
+    )
+except ModuleNotFoundError:  # pragma: no cover - direct script execution path.
+    sys.path.append(str(Path(__file__).resolve().parents[1]))
+    from ml.build_gold_manifest import (
+        OOD_CONDITION,
+        clean_optional,
+        image_subdir,
+        parse_bool,
+        sha256,
+        source_path,
+        split_list,
+    )
 
 REQUIRED_COLUMNS = {
     "source_path",
