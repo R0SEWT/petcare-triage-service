@@ -87,6 +87,17 @@ destination files. It writes `ml/gold/gold-v0/manifest.jsonl`, copies images
 into `images/...`, computes SHA-256, sets `neverTrain: true`, and emits
 `private://gold-v0/...` storage refs when the CSV leaves `storage_ref` blank.
 
+Audit progress before freezing the manifest:
+
+```bash
+uv run python ml/audit_gold_intake.py \
+  --intake-csv ml/gold/intake/gold-v0.adjudicated.csv \
+  --target-per-bucket 20
+```
+
+The audit reports per-condition/OOD/species/quality counts and target deficits.
+Use `--fail-on-deficit` in automation once the CSV is expected to be complete.
+
 ## Sourcing sequence
 
 1. **Vet-clinic partnership** (primary) — real, consented photos with vet-confirmed
