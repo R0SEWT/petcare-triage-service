@@ -74,3 +74,16 @@ vet-verified gold set (`gold-eval-set.md`).
 - Confirm license/usage terms on the chosen Roboflow/Kaggle set before committing.
 - Perceptual-hash dedup between any off-the-shelf training data and the gold set.
 - Vet-school outreach for the gold set remains the highest-value data action.
+
+## 2026-07-07 update — independent training expansion
+
+The first local `silver-v0` rehearsal from the Roboflow test split is useful for
+pipeline validation but not independent evaluation: exact SHA leakage was clean,
+while pHash threshold 4 found near-duplicates against train/val. See
+`../runs/silver-v0-roboflow-test-20260707.md`.
+
+For training expansion, prioritize independent/semi-independent sources that
+cover labels missing from the current bootstrap, especially `ringworm` →
+`dermatophytosis`. The current shortlist lives in
+`independent-training-candidates.md` and
+`independent-training-candidates.json`.

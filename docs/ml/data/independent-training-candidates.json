@@ -1,0 +1,150 @@
+{
+  "version": "2026-07-07",
+  "purpose": "Independent or semi-independent training/proxy expansion candidates. Not valid gold evaluation data.",
+  "targetGaps": [
+    "dermatophytosis",
+    "allergic_contact_dermatitis",
+    "non_skin_pet",
+    "human_skin",
+    "other_species",
+    "poor_quality"
+  ],
+  "candidates": [
+    {
+      "id": "roboflow-kaivlya-dogs-skin-disease",
+      "sourceType": "roboflow_universe",
+      "url": "https://universe.roboflow.com/kaivlya/dogs-skin-disease-fxh4x",
+      "reportedLicense": "CC BY 4.0",
+      "task": "classification",
+      "reportedImages": 2953,
+      "reportedVersions": 0,
+      "modelId": null,
+      "classes": [
+        "Healthy",
+        "Bacterial_dermatosis",
+        "demodicosis",
+        "Dermatitis",
+        "flea_allergy",
+        "Fungal_infections",
+        "hotspot",
+        "Hypersensitivity",
+        "Hypersensitivity_allergic_dermatosis",
+        "mange",
+        "ringworm"
+      ],
+      "coverage": {
+        "dermatophytosis": "ringworm",
+        "allergic_contact_dermatitis": "flea_allergy, hotspot, and Dermatitis are proxies only",
+        "atopic_dermatitis": "Hypersensitivity and Hypersensitivity_allergic_dermatosis",
+        "bacterial_pyoderma": "Bacterial_dermatosis",
+        "fungal_malassezia": "Fungal_infections",
+        "ood": "demodicosis and mange are out-of-scope dermatology; Healthy is negative"
+      },
+      "decision": "inspect_exportability_first",
+      "risk": "No published dataset version shown in search result, so export may require forking or manual Roboflow flow. Strong taxonomy coverage if accessible.",
+      "priority": 1
+    },
+    {
+      "id": "roboflow-dog-skin-disease-prediction-v3",
+      "sourceType": "roboflow_universe",
+      "url": "https://universe.roboflow.com/majorproject-kopqr/dog-skin-disease-prediction",
+      "reportedLicense": "CC BY 4.0",
+      "task": "classification",
+      "reportedImages": 361,
+      "reportedVersions": 3,
+      "modelId": "dog-skin-disease-prediction/3",
+      "classes": ["flea_allergy", "hotspot", "mange", "ringworm"],
+      "coverage": {
+        "dermatophytosis": "ringworm",
+        "allergic_contact_dermatitis": "flea_allergy and hotspot are allergy/inflammation proxies only",
+        "ood": "mange is out-of-scope condition candidate"
+      },
+      "decision": "acquire_for_training_probe",
+      "risk": "Small and likely noisy; labels are not veterinary adjudication. Dedup against existing Roboflow primary, Mendeley, silver, and future gold before training.",
+      "priority": 2
+    },
+    {
+      "id": "roboflow-gian-ringworm-demodicosis-v1",
+      "sourceType": "roboflow_universe",
+      "url": "https://universe.roboflow.com/gian-ocdnp/dog-skin-diseases-b7b5y-jvz7i",
+      "reportedLicense": "CC BY 4.0",
+      "task": "object_detection",
+      "reportedImages": 1379,
+      "reportedVersions": 1,
+      "modelId": "dog-skin-diseases-b7b5y-jvz7i/1",
+      "classes": ["Demodicosis", "Ringworm"],
+      "coverage": {
+        "dermatophytosis": "Ringworm",
+        "ood": "Demodicosis is out-of-scope dermatology"
+      },
+      "decision": "acquire_for_ringworm_and_ood_probe",
+      "risk": "Detection boxes need crop/classification conversion. Reported metrics are internal and not PetCare performance.",
+      "priority": 2
+    },
+    {
+      "id": "roboflow-dog-skin-disease-detection-v1",
+      "sourceType": "roboflow_universe",
+      "url": "https://universe.roboflow.com/myprojects-zsnac/dog-skin-disease-detection-6pgvk",
+      "reportedLicense": "CC BY 4.0",
+      "task": "classification",
+      "reportedImages": 359,
+      "reportedVersions": 1,
+      "modelId": "dog-skin-disease-detection-6pgvk/1",
+      "classes": ["flea_allergy", "hotspot", "mange", "ringworm", "Unlabeled"],
+      "coverage": {
+        "dermatophytosis": "ringworm",
+        "allergic_contact_dermatitis": "flea_allergy and hotspot are allergy/inflammation proxies only",
+        "ood": "mange and unlabeled examples"
+      },
+      "decision": "secondary_acquire_if_primary_probe_is_useful",
+      "risk": "Small and taxonomy-shifted. Use after first Roboflow prediction dataset if dedup shows independence.",
+      "priority": 2
+    },
+    {
+      "id": "kaggle-smadive-pet-disease-images",
+      "sourceType": "kaggle",
+      "url": "https://www.kaggle.com/datasets/smadive/pet-disease-images",
+      "reportedLicense": "CC0-1.0",
+      "task": "image_classification_candidate",
+      "reportedImages": null,
+      "classes": [],
+      "coverage": {
+        "ood": "potential non-skin pet disease and poor-quality examples",
+        "condition": "unknown until download and manifest inspection"
+      },
+      "decision": "inspect_metadata_before_download",
+      "risk": "May be non-dermatology or weakly labeled. Do not map to condition labels without folder/class inspection.",
+      "priority": 2
+    },
+    {
+      "id": "hf-human-derm-scin",
+      "sourceType": "huggingface_dataset",
+      "url": "https://hf.co/datasets/HawkFranklin-Research/SCIN-Dermatology-Raw-Images",
+      "reportedLicense": "MIT",
+      "task": "human_dermatology_images",
+      "reportedImages": 6517,
+      "classes": [],
+      "coverage": {
+        "human_skin": "human skin OOD and optional texture pretraining"
+      },
+      "decision": "use_for_human_ood_only",
+      "risk": "Human skin must never carry pet condition labels.",
+      "priority": 3
+    },
+    {
+      "id": "hf-cats-vs-dogs",
+      "sourceType": "huggingface_dataset",
+      "url": "https://hf.co/datasets/microsoft/cats_vs_dogs",
+      "reportedLicense": "unknown",
+      "task": "pet_image_ood",
+      "reportedImages": null,
+      "classes": ["cat", "dog"],
+      "coverage": {
+        "non_skin_pet": "whole-pet OOD negatives"
+      },
+      "decision": "use_for_ood_gate_only_after_license_check",
+      "risk": "License uncertainty; useful only for OOD, not condition training.",
+      "priority": 3
+    }
+  ]
+}
