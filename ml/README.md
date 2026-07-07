@@ -6,7 +6,9 @@ First dermatology-triage baseline. **Classification** (YOLOv8-cls), per
 
 Runs on a **GPU box** (Lightning AI via SSH / Colab / HF Jobs) — not locally.
 `prepare_data.py` is stdlib-only and verifiable without a GPU; training needs
-`ultralytics` + `torch`.
+`ultralytics` + `torch`. Dataset deduplication uses `pillow` + `imagehash`,
+which are listed in `requirements.txt` and can also be injected locally with
+`uv run --with pillow --with imagehash ...`.
 
 ## Label space (v0, coarse)
 

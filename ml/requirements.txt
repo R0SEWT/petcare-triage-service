@@ -4,3 +4,5 @@ ultralytics>=8.3
 # build matching the machine, e.g.:
 #   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 kaggle>=1.6
+pillow>=10
+imagehash>=4.3
