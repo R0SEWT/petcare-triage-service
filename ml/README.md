@@ -1,8 +1,9 @@
 # ml — YOLOv8-cls training (coarse baseline v0)
 
 First dermatology-triage baseline. **Classification** (YOLOv8-cls), per
-`../docs/ml/model-task-decision.md`. Trains on real Kaggle data
-(`../docs/ml/data/dataset-scouting.md`) mapped to our canonical labels.
+`../docs/ml/model-task-decision.md`. Current bootstrap data comes from the
+deduplicated Roboflow mirror documented in
+`../docs/ml/data/roboflow-dog-skin-disease-v2.md`.
 
 Runs on a **GPU box** (Lightning AI via SSH / Colab / HF Jobs) — not locally.
 `prepare_data.py` is stdlib-only and verifiable without a GPU; training needs
@@ -32,19 +33,23 @@ directional only.
 
 ```bash
 ssh <lightning-box>
-cd ml
-pip install -r requirements.txt          # + CUDA torch matching the GPU
-python prepare_data.py --download --out ./prepared --copy
-python train_yolo_cls.py --data ./prepared --device 0 --epochs 50
+cd <petcare-triage-service>
+pip install -r ml/requirements.txt       # + CUDA torch matching the GPU
+python ml/build_cv_folds.py
+python ml/train_yolo_cls.py --folds-dir ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4_cv5 --device 0 --epochs 50
 ```
 
-`prepare_data.py --download` needs `~/.kaggle/kaggle.json` on the box.
 Weights land in `runs/` (gitignored). Data/weights are never committed.
+Use `--fold 0` to train only one fold for a smoke test before running all
+folds.
 
 ## Verify the mapping locally (no GPU)
 
 ```bash
-python prepare_data.py --source-dir <downloaded>/Dogs --out ./prepared
+python ml/prepare_data.py --source-dir <downloaded>/Dogs --out ml/prepared
+python ml/build_cv_folds.py --out "$(mktemp -d)/cv5_check"
 ```
-Prints per-canonical-label train/val counts. Confirmed on
-`yashmotiani/dogs-skin-disease-dataset` (CC0): 439 imgs → 4 canonical buckets.
+`prepare_data.py` prints per-canonical-label train/val counts for legacy Kaggle
+checks. `build_cv_folds.py` prints fold-level train/val counts and should report
+balanced validation folds around 839-840 images each for the deduped Roboflow
+bootstrap set.

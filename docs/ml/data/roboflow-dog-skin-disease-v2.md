@@ -168,6 +168,39 @@ pHash near-duplicate distance distribution:
 | 2 | 4 |
 | 4 | 3 |
 
+## Cross-validation folds
+
+Bootstrap training should use group-aware cross-validation over the filtered
+train/val pool instead of trusting the original Roboflow split. The fold builder
+keeps Roboflow augmentation siblings together by grouping filenames before the
+`.rf.<augmentation-id>` suffix, then stratifies by training label.
+
+Default output:
+
+- `ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4_cv5/fold_<n>/train/<label>/*.jpg`
+- `ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4_cv5/fold_<n>/val/<label>/*.jpg`
+- `ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4_cv5/fold_<n>/manifest.jsonl`
+- `ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4_cv5/fold_report.json`
+
+Cross-validation result:
+
+- folds: 5
+- source rows: 4,198
+- source groups: 1,614
+- symlinked fold images: 20,990
+- manifest rows per fold: 4,198
+- group leakage check: 0 groups appear in both train and val within the same fold
+
+Fold validation counts:
+
+| Fold | Val total | `atopic_dermatitis` | `bacterial_pyoderma` | `fungal_malassezia` | `healthy_skin` |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 0 | 840 | 175 | 211 | 230 | 224 |
+| 1 | 840 | 175 | 210 | 231 | 224 |
+| 2 | 840 | 175 | 210 | 231 | 224 |
+| 3 | 839 | 175 | 210 | 231 | 223 |
+| 4 | 839 | 174 | 211 | 231 | 223 |
+
 ## Verification commands
 
 ```bash
@@ -181,4 +214,7 @@ uv run --with pillow --with imagehash python ml/filter_roboflow_dedup.py
 uv run --with pillow --with imagehash python ml/filter_roboflow_dedup.py --out "$(mktemp -d)/roboflow_dedup_check"
 wc -l ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4/manifest.jsonl ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4/removed.jsonl
 find ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4/images -type l | wc -l
+uv run python ml/build_cv_folds.py --out "$(mktemp -d)/cv5_check"
+find ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4_cv5 -path '*/manifest.jsonl' -type f -print0 | xargs -0 wc -l
+find ml/prepared/roboflow_dog_skin_disease_dataset_v2_dedup_phash4_cv5 -type l | wc -l
 ```
