@@ -34,8 +34,8 @@ It does not cover:
    - Why: broadest classification taxonomy found so far: `ringworm`,
      `flea_allergy`, `hotspot`, `mange`, `demodicosis`, `Hypersensitivity`,
      `Bacterial_dermatosis`, `Fungal_infections`, and `Healthy`.
-   - Caveat: search result shows no published dataset version/model, so first
-     step is exportability inspection rather than immediate training import.
+   - Result: not exportable right now. The public page reports `Dataset versions
+     0` and `Models 0`, so there is no stable Universe export version.
 
 2. **Roboflow dog-skin-disease-prediction v3**
    - URL: https://universe.roboflow.com/majorproject-kopqr/dog-skin-disease-prediction
@@ -81,8 +81,7 @@ Before any candidate becomes training data:
 
 ## Decision
 
-Next concrete acquisition should inspect exportability for
-`roboflow-kaivlya-dogs-skin-disease`. If it is not exportable through a stable
-version, fall back to `roboflow-dog-skin-disease-prediction-v3`, which is the
-smallest useful way to add `ringworm`/`dermatophytosis` signal and test
-cross-source dedup.
+Kaivlya is not currently exportable through a stable version. Continue with
+`roboflow-dog-skin-disease-prediction-v3`, which is the smallest useful way to
+add `ringworm`/`dermatophytosis` signal and test cross-source dedup. See
+`roboflow-dog-skin-disease-prediction-v3.md`.

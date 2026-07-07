@@ -40,8 +40,8 @@
         "fungal_malassezia": "Fungal_infections",
         "ood": "demodicosis and mange are out-of-scope dermatology; Healthy is negative"
       },
-      "decision": "inspect_exportability_first",
-      "risk": "No published dataset version shown in search result, so export may require forking or manual Roboflow flow. Strong taxonomy coverage if accessible.",
+      "decision": "not_exportable_no_stable_version",
+      "risk": "Public Roboflow page reports Dataset versions 0 and Models 0. Strong taxonomy coverage if the owner later publishes a version, but no stable export path now.",
       "priority": 1
     },
     {
@@ -59,7 +59,7 @@
         "allergic_contact_dermatitis": "flea_allergy and hotspot are allergy/inflammation proxies only",
         "ood": "mange is out-of-scope condition candidate"
       },
-      "decision": "acquire_for_training_probe",
+      "decision": "fallback_ready_for_acquisition",
       "risk": "Small and likely noisy; labels are not veterinary adjudication. Dedup against existing Roboflow primary, Mendeley, silver, and future gold before training.",
       "priority": 2
     },

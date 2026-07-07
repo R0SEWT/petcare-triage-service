@@ -82,7 +82,10 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def image_path(root: Path, row: dict[str, Any]) -> Path:
-    path = root / str(row["image_path"])
+    image_value = row.get("image_path") or row.get("imagePath")
+    if not image_value:
+        raise SystemExit(f"Missing image path for manifest row {row.get('_manifest')}:{row.get('_line')}")
+    path = root / str(image_value)
     if not path.is_file():
         raise SystemExit(f"Missing image for manifest row {row.get('_manifest')}:{row.get('_line')}: {path}")
     return path
@@ -104,7 +107,7 @@ def build_reference_index(reference_manifests: list[Path]) -> tuple[dict[str, di
             record = {
                 "manifest": str(manifest),
                 "line": row["_line"],
-                "image_path": row["image_path"],
+                "image_path": row.get("image_path") or row.get("imagePath"),
                 "sha256": digest,
                 "condition": row.get("condition"),
                 "oodClass": row.get("oodClass"),
