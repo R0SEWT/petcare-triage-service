@@ -54,6 +54,39 @@ Rows must validate against
 Example rows live in `gold-v0.manifest.example.jsonl`. They are schema examples
 only and are not part of the frozen set.
 
+## Intake workflow
+
+Use `gold-v0.intake.template.csv` for adjudicated candidate rows. Replace the
+template rows before use; they are not valid collection data. Keep the raw
+candidate images outside git, for example under `ml/gold/intake/raw/`.
+
+The intake CSV must be explicit about provenance and review status before any
+image becomes part of the frozen set:
+
+- `source_path`: source image path, relative to the CSV or absolute.
+- `image_id`: stable `gold_...` identifier.
+- `source`, `license`, `consent_scope`: provenance and permission.
+- `species`, `breed`, `body_region`, `condition`, `ood_class`, `quality_flags`:
+  label fields matching `gold-manifest.schema.json`.
+- `vet_confirmed`, `annotator_id`, `labeled_at`, `labelers`, `agreed`,
+  `tiebreak`: adjudication trail.
+- `notes`, `storage_ref`: optional context and external storage pointer.
+
+Build the private gold dataset directory from an adjudicated CSV:
+
+```bash
+uv run python ml/build_gold_manifest.py \
+  --intake-csv ml/gold/intake/gold-v0.adjudicated.csv \
+  --gold-root ml/gold/gold-v0 \
+  --dataset-version gold-v0
+```
+
+The builder refuses rows without `vet_confirmed=true`, missing source files,
+duplicate image IDs, duplicate image hashes, schema violations, or pre-existing
+destination files. It writes `ml/gold/gold-v0/manifest.jsonl`, copies images
+into `images/...`, computes SHA-256, sets `neverTrain: true`, and emits
+`private://gold-v0/...` storage refs when the CSV leaves `storage_ref` blank.
+
 ## Sourcing sequence
 
 1. **Vet-clinic partnership** (primary) — real, consented photos with vet-confirmed

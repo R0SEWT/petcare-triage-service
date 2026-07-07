@@ -13,6 +13,9 @@ the mock service, the real service, and the frontend client all build against.
 | `urgency-policy.json` | Ordered rule table: result → urgency class | service (urgency layer), documented for frontend |
 | `gold-manifest.schema.json` | Frozen vet-verified eval manifest row | offline eval, HF dataset provenance, leakage checks |
 
+Gold manifests can be generated from adjudicated CSV intake sheets with
+`ml/build_gold_manifest.py`; see `../data/gold-eval-set.md`.
+
 ## Design decisions baked into v0.1
 
 - **`resultState` is explicit.** The response carries

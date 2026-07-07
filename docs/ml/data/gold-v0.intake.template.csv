@@ -1,0 +1,3 @@
+source_path,image_id,source,license,species,breed,body_region,condition,ood_class,quality_flags,vet_confirmed,annotator_id,labeled_at,labelers,agreed,tiebreak,consent_scope,notes,storage_ref
+../intake/raw/example_atopic.jpg,gold_000001,vet_clinic_partner_A,consented,dog,unknown,belly,atopic_dermatitis,in_scope,,true,vet_01,2026-07-07,vet_01;reviewer_01,true,,eval_only,template row - replace before use,
+../intake/raw/example_human.jpg,gold_000002,licensed_ood_source,CC-BY-4.0,human,,unknown,unknown,human_skin,,true,vet_01,2026-07-07,vet_01,true,,eval_only,template OOD row - replace before use,
