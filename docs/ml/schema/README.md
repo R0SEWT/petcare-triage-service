@@ -11,6 +11,7 @@ the mock service, the real service, and the frontend client all build against.
 | `triage-error.schema.json` | Non-200 error body | mock + service, frontend error handling |
 | `labels.json` | Canonical condition taxonomy + localized display strings | service (class ids), frontend (localization), eval (label space) |
 | `urgency-policy.json` | Ordered rule table: result → urgency class | service (urgency layer), documented for frontend |
+| `gold-manifest.schema.json` | Frozen vet-verified eval manifest row | offline eval, HF dataset provenance, leakage checks |
 
 ## Design decisions baked into v0.1
 

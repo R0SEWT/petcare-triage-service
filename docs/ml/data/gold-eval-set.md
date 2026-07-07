@@ -1,6 +1,6 @@
 # Gold Evaluation Set — spec
 
-Owner: ML Lead · Task: `ll2` · Status: spec (collection not started)
+Owner: ML Lead · Task: `petcare-triage-service-gy0` · Status: executable spec (collection not started)
 
 The gold set is a **small, frozen, vet-verified** test set that measures the
 classifier + OOD gate. It is never trained on. It is the single asset that lets
@@ -24,11 +24,16 @@ tiny vet-verified set beats a large noisy one.
 
 Stored as JSONL alongside images; fields mirror the contract's persistence
 requirements so eval records and production records share a shape.
+Rows must validate against
+[`../schema/gold-manifest.schema.json`](../schema/gold-manifest.schema.json).
 
 ```json
 {
   "imageId": "gold_000123",
-  "storageRef": "s3://.../gold/000123.jpg",
+  "datasetVersion": "gold-v0",
+  "imagePath": "images/in_scope/allergic_contact_dermatitis/gold_000123.jpg",
+  "storageRef": "private://gold-v0/images/in_scope/allergic_contact_dermatitis/gold_000123.jpg",
+  "sha256": "<64 lowercase hex chars>",
   "source": "vet_clinic_partner_A | licensed_atlas | curated_web | hf:<repo>",
   "license": "consented | CC-BY-NC-4.0 | MIT | ...",
   "species": "dog",
@@ -40,9 +45,14 @@ requirements so eval records and production records share a shape.
   "vetConfirmed": true,
   "annotatorId": "vet_07",
   "labeledAt": "2026-07-06",
-  "adjudication": { "labelers": ["a11", "a04"], "agreed": true, "tiebreak": null }
+  "adjudication": { "labelers": ["a11", "a04"], "agreed": true, "tiebreak": null },
+  "consentScope": "eval_only",
+  "neverTrain": true
 }
 ```
+
+Example rows live in `gold-v0.manifest.example.jsonl`. They are schema examples
+only and are not part of the frozen set.
 
 ## Sourcing sequence
 
@@ -62,6 +72,32 @@ requirements so eval records and production records share a shape.
   contract references it.
 - **Leakage guard:** no image (or near-duplicate) may appear in both gold and
   training. Run perceptual-hash dedup across the boundary.
+- **Executable gate:** `ml/evaluate_gold.py` refuses rows without
+  `vetConfirmed: true`, `neverTrain: true`, present image files, and matching
+  SHA-256 hashes.
+
+## Offline eval harness
+
+Run only after the frozen image directory and manifest exist:
+
+```bash
+uv run --extra dev python -m pytest tests/test_gold_manifest_schema.py
+uv run python ml/evaluate_gold.py \
+  --manifest ml/gold/gold-v0/manifest.jsonl \
+  --image-root ml/gold/gold-v0 \
+  --checkpoint ml/runs/petcare-derm-yolov8-cls/cv5-yolov8n-fold_0/weights/best.pt \
+  --checkpoint ml/runs/petcare-derm-yolov8-cls/cv5-yolov8n-fold_1/weights/best.pt \
+  --checkpoint ml/runs/petcare-derm-yolov8-cls/cv5-yolov8n-fold_2/weights/best.pt \
+  --checkpoint ml/runs/petcare-derm-yolov8-cls/cv5-yolov8n-fold_3/weights/best.pt \
+  --checkpoint ml/runs/petcare-derm-yolov8-cls/cv5-yolov8n-fold_4/weights/best.pt
+```
+
+Current bootstrap checkpoints do not implement a real OOD/image-quality gate.
+The harness therefore reports in-scope condition accuracy and healthy-skin
+negative accuracy separately, while counting non-skin/human/other-species and
+poor-quality rows as present but not scored for condition accuracy. For scored
+rows it emits confusion, per-label precision/recall/F1, abstention coverage at
+the configured confidence threshold, and approximate ECE.
 
 ## Acceptance criteria
 
