@@ -1,8 +1,8 @@
 # GPU box only (Lightning AI / Colab / HF Jobs). Not installed locally.
-ultralytics>=8.3
+ultralytics>=8.4.102
 # torch/torchvision come as ultralytics deps; on the GPU box install the CUDA
 # build matching the machine, e.g.:
 #   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
-kaggle>=1.6
-pillow>=10
-imagehash>=4.3
+kaggle>=2.2.3
+pillow>=12.3.0
+imagehash>=4.3.2
